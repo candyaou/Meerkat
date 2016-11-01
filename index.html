@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>MEERKAT</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/stylish-portfolio.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/creative.css" type="text/css">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script> 
+    <style type="text/css">
+        body { font-family: Helvetica, sans-serif; }
+        h2, h3 { margin-top:0; }
+        form { margin-top: 15px; }
+        form > input { margin-right: 15px; }
+    </style>
+
+</head>
+
+<body>
+    <!-- Navigation -->
+    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
+    <nav id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
+            <li class="sidebar-brand">
+                <a href="#top" onclick=$("#menu-close").click();>Meerkat</a>
+            </li>
+            <li>
+                <a href="#top" onclick=$("#menu-close").click();>Home</a>
+            </li>
+            <li>
+                <a href="#addPerson" onclick=$("#menu-close").click();>Add Person</a>
+            </li>
+            <li>
+                <a href="#createGroup" onclick=$("#menu-close").click();>Create Group</a>
+            </li>
+            <li>
+                <a href="#portfolio" onclick=$("#menu-close").click();>Portfolio</a>
+            </li>
+            <li>
+                <a href="#contact" onclick=$("#menu-close").click();>Contact</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Header -->
+    <header id="top" class="bg">
+        <div id='stars'></div>
+        <div id='stars2'></div>
+        <div id='stars3'></div>
+        <div class="text-vertical-center">
+            <img src="img/logow.png" width="300px" height="300px">
+            <h1 style="color: white;">MEERKAT</h1>
+            <h3 style="color: white;">Faster</h3>
+            <h3 style="color: white;">Easier</h3>
+            <h3 style="color: white;">Face API</h3>
+            <br>
+            <a href="#addPerson" class="btn btn-dark btn-lg">Find Out More</a>
+        </div>
+    </header>
+
+    <!-- ADD PERSON TO GROUP -->
+    <section id="addPerson" class="bg">
+        <div id='stars'></div>
+        <div id='stars2'></div>
+        <div id='stars3'></div>
+         <div class="text-vertical-center">
+            <div class="row">
+                 <div class="col-md-2 flex-center"></div>
+                 <div class="col-md-8 flex-center">
+                     <h1 style="color: white; margin-bottom: 5%">ADD PERSON TO GROUP</h1>
+                 </div>
+                 <div class="col-md-2 flex-center"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 flex-center"></div>
+                <div class="col-md-6 flex-center">
+                    <div class="card">
+                        <div id="my_photo_booth">
+                            <div id="my_camera" style="margin-top:5%;"></div>
+                            
+                            <!-- First, include the Webcam.js JavaScript Library -->
+                            <script type="text/javascript" src="js/webcam.js"></script>
+                            
+                            <!-- Configure a few settings and attach camera -->
+                            <script language="JavaScript">
+                                    Webcam.set({
+                                        width: 480,
+                                        height: 360,
+                                        
+                                        // device capture size
+                                        dest_width: 480,
+                                        dest_height: 360,
+                                        
+                                        // final cropped size
+                                        crop_width: 360,
+                                        crop_height: 360,
+                                        
+                                        // format and quality
+                                        image_format: 'jpeg',
+                                        jpeg_quality: 90,
+                                        
+                                });
+                                Webcam.attach( '#my_camera' );
+                            </script>
+                            
+                            <!-- A button for taking snaps -->
+                            <form>
+                                <div id="pre_take_buttons">
+                                    <!-- This button is shown before the user takes a snapshot -->
+                                    <input class="btn btn-danger" type=button value="Take Snapshot" onClick="preview_snapshot()">
+                                </div>
+                                <div id="post_take_buttons" style="display:none">
+                                    <!-- These buttons are shown after a snapshot is taken -->
+                                    <input class="btn btn-warning" type=button value="Take Another" onClick="cancel_preview()">
+                                    <input class="btn btn-success" type=button value="Confirm" onClick="save_photo()" style="font-weight:bold;">
+                                </div>
+                            </form>
+                        </div>
+
+                        <div id="results" style="display:none; margin-top:5%;">
+                            <!-- Your captured image will appear here... -->
+                        </div>
+
+                        <div  style="margin-top: 10px;">
+                            <label for="Fname" style="margin-right: 10px;">Insert Your firstname</label>
+                            <input type="text" class="form-control" id="Fname" name="Fname">
+                        </div>
+                        <div  style="margin-top: 10px;">
+                            <label for="Lname" style="margin-right: 10px;">Insert Your Lastname</label>
+                            <input type="text" class="form-control" id="Lname" name="Lname">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 flex-center"></div>
+            </div>
+
+            <!-- Code to handle taking the snapshot and displaying it locally -->
+            <script language="JavaScript">
+                var data;
+                function preview_snapshot() {
+                    // play sound effect
+                    // try { shutter.currentTime = 0; } catch(e) {;} // fails in IE
+                    // shutter.play();
+                    
+                    // freeze camera so user can preview current frame
+                    Webcam.freeze();
+                    
+                    // swap button sets
+                    document.getElementById('pre_take_buttons').style.display = 'none';
+                    document.getElementById('post_take_buttons').style.display = '';
+                }
+                
+                function cancel_preview() {
+                    // cancel preview freeze and return to live camera view
+                    Webcam.unfreeze();
+                    
+                    // swap buttons back to first set
+                    document.getElementById('pre_take_buttons').style.display = '';
+                    document.getElementById('post_take_buttons').style.display = 'none';
+                }
+                
+                function save_photo() {
+                    // actually snap photo (from preview freeze) and display it
+                    
+                    Webcam.snap( function(data_uri) {
+                        // display results in page
+                        data = data_uri;
+                        document.getElementById('results').innerHTML = 
+                            '<img src="'+data+'"/><br/>' + 
+                            '<button type="button" class="upload btn btn-success" style="margin-top:4%;">Upload</button>';
+                        
+                        // shut down camera, stop capturing
+                        Webcam.reset();
+                        
+                        // show results, hide photo booth
+                        document.getElementById('results').style.display = '';
+                        document.getElementById('my_photo_booth').style.display = 'none';
+                    } );
+                }
+            </script>
+
+            <script type="text/javascript">
+                $(function(){
+                    $('body').on('click', '.upload', function(){
+                        f = document.getElementById('Fname').value
+                        l = document.getElementById('Lname').value
+                        $.post('upload.php', {image: data,Fname: f,Lname: l }, function(res){
+                            console.log(res);
+                            window.location = "index.html";
+                        });
+                    });
+                });
+            </script>
+
+        </div>
+    </section>
+
+    <!-- CREATE NEW GROUP -->
+    <section id="createGroup" class="bg">
+        <div id='stars'></div>
+        <div id='stars2'></div>
+        <div id='stars3'></div>
+         <div class="text-vertical-center">
+            <div class="row">
+                 <div class="col-md-2 flex-center"></div>
+                 <div class="col-md-8 flex-center">
+                     <h1 style="color: white; margin-bottom: 5%">CREATE NEW GROUP</h1>
+                 </div>
+                 <div class="col-md-2 flex-center"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 flex-center"></div>
+                <div class="col-md-6 flex-center">
+                    <div class="card">
+                        <img src="img/logo.png" width="150px" height="150px" style="margin-top: 5%">
+                        <form id="group" method="POST" action="http://localhost:8080/api/controllers/groups" style="width: 360px">
+                            <div  style="margin-top: 10px;">
+                                <label for="groupId" style="margin-right: 10px;">Insert Your groupId</label>
+                                <input type="text" class="form-control" id="groupId" name="groupId">
+                            </div>
+                            <div  style="margin-top: 10px;">
+                                <label for="groupName" style="margin-right: 10px;">Insert Your groupName</label>
+                                <input type="text" class="form-control" id="groupName" name="groupName">
+                            </div>
+                            <div  style="margin-top: 10px;">
+                                <label for="groupDetail" style="margin-right: 10px;">Insert Your groupDetail</label>
+                                <input type="text" class="form-control" id="groupDetail" name="groupDetail">
+                            </div>
+                            <button type="submit" class="btn btn-success" style="margin-top: 10px;">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 flex-center"></div>
+            </div>
+
+        <!-- ajax create group -->
+        <script type='text/javascript'>
+            /* attach a submit handler to the form */
+            $("#group").submit(function(event) {
+
+              event.preventDefault();
+
+              var $form = $( this ),
+                  url = $form.attr( 'action' );
+
+              var posting = $.post( url, { groupId: $('#groupId').val(), groupName: $('#groupName').val(), groupDetail: $('#groupDetail').val() } );
+
+              posting.done(function( data ) {
+                var log = console.log(data);
+                alert('success');
+              });
+            });
+        </script>
+        </div>
+    </section>
+
+    <!-- Portfolio -->
+    <section id="portfolio" class="bg">
+        <div id='stars'></div>
+        <div id='stars2'></div>
+        <div id='stars3'></div>
+         <div class="text-vertical-center">
+            <h1>Start Bootstrap</h1>
+            <h3>Free Bootstrap Themes &amp; Templates</h3>
+            <br>
+            <a class="btn btn-dark btn-lg">Find Out More</a>
+        </div>
+    </section>
+
+    <!-- Map -->
+    <section id="contact" class="bg">
+        <div id='stars'></div>
+        <div id='stars2'></div>
+        <div id='stars3'></div>
+         <div class="text-vertical-center">
+            <h1>Start Bootstrap</h1>
+            <h3>Free Bootstrap Themes &amp; Templates</h3>
+            <br>
+            <a class="btn btn-dark btn-lg">Find Out More</a>
+        </div>
+    </section>
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script>
+    // Closes the sidebar menu
+    $("#menu-close").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    // Opens the sidebar menu
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    // Scrolls to the selected menu item on the page
+    $(function() {
+        $('a[href*=#]:not([href=#],[data-toggle],[data-target],[data-slide])').click(function() {
+            if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') || location.hostname == this.hostname) {
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                if (target.length) {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top
+                    }, 1000);
+                    return false;
+                }
+            }
+        });
+    });
+    //#to-top button appears after scrolling
+    var fixed = false;
+    $(document).scroll(function() {
+        if ($(this).scrollTop() > 250) {
+            if (!fixed) {
+                fixed = true;
+                // $('#to-top').css({position:'fixed', display:'block'});
+                $('#to-top').show("slow", function() {
+                    $('#to-top').css({
+                        position: 'fixed',
+                        display: 'block'
+                    });
+                });
+            }
+        } else {
+            if (fixed) {
+                fixed = false;
+                $('#to-top').hide("slow", function() {
+                    $('#to-top').css({
+                        display: 'none'
+                    });
+                });
+            }
+        }
+    });
+    // Disable Google Maps scrolling
+    // See http://stackoverflow.com/a/25904582/1607849
+    // Disable scroll zooming and bind back the click event
+    var onMapMouseleaveHandler = function(event) {
+        var that = $(this);
+        that.on('click', onMapClickHandler);
+        that.off('mouseleave', onMapMouseleaveHandler);
+        that.find('iframe').css("pointer-events", "none");
+    }
+    var onMapClickHandler = function(event) {
+            var that = $(this);
+            // Disable the click handler until the user leaves the map area
+            that.off('click', onMapClickHandler);
+            // Enable scrolling zoom
+            that.find('iframe').css("pointer-events", "auto");
+            // Handle the mouse leave event
+            that.on('mouseleave', onMapMouseleaveHandler);
+        }
+        // Enable map zooming with mouse scroll when the user clicks the map
+    $('.map').on('click', onMapClickHandler);
+    </script>    
+</body>
+
+</html>
