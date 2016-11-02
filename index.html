@@ -49,7 +49,7 @@
                 <a href="#createGroup" onclick=$("#menu-close").click();>Create Group</a>
             </li>
             <li>
-                <a href="#portfolio" onclick=$("#menu-close").click();>Portfolio</a>
+                <a href="#createMember" onclick=$("#menu-close").click();>Create Member</a>
             </li>
             <li>
                 <a href="#contact" onclick=$("#menu-close").click();>Contact</a>
@@ -79,13 +79,6 @@
         <div id='stars2'></div>
         <div id='stars3'></div>
          <div class="text-vertical-center">
-            <!-- <div class="row">
-                 <div class="col-md-2 flex-center"></div>
-                 <div class="col-md-8 flex-center">
-                     <h1 style="color: white; margin-bottom: 5%">ADD PERSON TO GROUP</h1>
-                 </div>
-                 <div class="col-md-2 flex-center"></div>
-            </div> -->
             <div class="row">
                 <div class="col-md-3 flex-center"></div>
                 <div class="col-md-6 flex-center" style="z-index: 1;">
@@ -93,7 +86,7 @@
                         <div id="my_photo_booth">
                             <div id="my_camera" style="margin-top:5%;"></div>
                             
-                            <!-- First, include the Webcam.js JavaScript Library -->
+                            <!-- Include the Webcam.js JavaScript Library -->
                             <script type="text/javascript" src="js/webcam.js"></script>
                             
                             <!-- Configure a few settings and attach camera -->
@@ -133,7 +126,7 @@
                         </div>
 
                         <div id="results" style="display:none; margin-top:5%;">
-                            <!-- Your captured image will appear here... -->
+                            <!-- Captured image will appear here... -->
                         </div>
 
                         <div  style="margin-top: 10px;">
@@ -154,9 +147,6 @@
             <script language="JavaScript">
                 var data;
                 function preview_snapshot() {
-                    // play sound effect
-                    // try { shutter.currentTime = 0; } catch(e) {;} // fails in IE
-                    // shutter.play();
                     
                     // freeze camera so user can preview current frame
                     Webcam.freeze();
@@ -271,16 +261,67 @@
         </div>
     </section>
 
-    <!-- Portfolio -->
-    <section id="portfolio" class="bg">
+    <!-- CREATE MEMBER IN GROUP -->
+    <section id="createMember" class="bg">
         <div id='stars'></div>
         <div id='stars2'></div>
         <div id='stars3'></div>
          <div class="text-vertical-center">
-            <h1>Start Bootstrap</h1>
-            <h3>Free Bootstrap Themes &amp; Templates</h3>
-            <br>
-            <a class="btn btn-dark btn-lg">Find Out More</a>
+            <div class="row">
+                 <div class="col-md-2 flex-center"></div>
+                 <div class="col-md-8 flex-center">
+                     <h1 style="color: white; margin-bottom: 5%">CREATE MEMBER IN GROUP</h1>
+                 </div>
+                 <div class="col-md-2 flex-center"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 flex-center"></div>
+                <div class="col-md-6 flex-center">
+                    <div class="card">
+                        <img src="img/logo.png" width="150px" height="150px" style="margin-top: 5%">
+                        <form id="member" method="POST" action="http://localhost:8080/api/controllers/groups/:group_id/members" style="width: 360px">
+                            <div  style="margin-top: 10px;">
+                                <label for="memberId" style="margin-right: 10px;">Insert Your memberId</label>
+                                <input type="text" class="form-control" id="memberId" name="memberId">
+                            </div>
+                            <div  style="margin-top: 10px;">
+                                <label for="firstname" style="margin-right: 10px;">Insert Your firstname</label>
+                                <input type="text" class="form-control" id="firstname" name="firstname">
+                            </div>
+                            <div  style="margin-top: 10px;">
+                                <label for="lastname" style="margin-right: 10px;">Insert Your lastname</label>
+                                <input type="text" class="form-control" id="lastname" name="lastname">
+                            </div>
+                            <div  style="margin-top: 10px;">
+                                <label for="memberDetail" style="margin-right: 10px;">Insert Your memberDetail</label>
+                                <input type="text" class="form-control" id="memberDetail" name="memberDetail">
+                            </div>
+                            <button type="submit" class="btn btn-success" style="margin-top: 10px;">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 flex-center"></div>
+            </div>
+
+            <!-- ajax create member in group -->
+            <script type='text/javascript'>
+                /* attach a submit handler to the form */
+                $("#member").submit(function(event) {
+
+                  event.preventDefault();
+
+                  var $form = $( this ),
+                      url = $form.attr( 'action' );
+
+                  var posting = $.post( url, { memberId: $('#memberId').val(), firstname: $('#firstname').val(), lastname: $('#lastname').val(), memberDetail: $('#memberDetail').val() } );
+
+                  posting.done(function( data ) {
+                    var log = console.log(data);
+                    alert('success');
+                  });
+                });
+            </script>
         </div>
     </section>
 
@@ -355,26 +396,6 @@
             }
         }
     });
-    // Disable Google Maps scrolling
-    // See http://stackoverflow.com/a/25904582/1607849
-    // Disable scroll zooming and bind back the click event
-    var onMapMouseleaveHandler = function(event) {
-        var that = $(this);
-        that.on('click', onMapClickHandler);
-        that.off('mouseleave', onMapMouseleaveHandler);
-        that.find('iframe').css("pointer-events", "none");
-    }
-    var onMapClickHandler = function(event) {
-            var that = $(this);
-            // Disable the click handler until the user leaves the map area
-            that.off('click', onMapClickHandler);
-            // Enable scrolling zoom
-            that.find('iframe').css("pointer-events", "auto");
-            // Handle the mouse leave event
-            that.on('mouseleave', onMapMouseleaveHandler);
-        }
-        // Enable map zooming with mouse scroll when the user clicks the map
-    $('.map').on('click', onMapClickHandler);
     </script>    
 </body>
 
