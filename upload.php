@@ -1,4 +1,5 @@
-<?php 
+<?php
+	header('Access-Control-Allow-Origin:*'); 
 	$con = mysqli_connect("localhost","root","root","meerkat");
 	if($_POST['image']){
 		$data = $_POST['image'];
