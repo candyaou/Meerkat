@@ -271,7 +271,7 @@
                     type        : 'POST',
                     data        : g, // our data object
                     dataType    : 'json', // what type of data do we expect back from the server
-                    contentType: "application/x-www-form-urlencoded"
+                    contentType : "application/x-www-form-urlencoded"
                 })
                 // using the done promise callback
                 .done(function(data) {
@@ -280,7 +280,7 @@
                     alert("Done");
                     location.reload();
                 })
-                 // here we will handle errors and validation messages
+                // here we will handle errors and validation messages
                 .fail(function(data) {
                     console.log(data); 
                     alert("Error");
@@ -359,10 +359,10 @@
                 $('#member').submit(function(event) {
                     var createMember = {
                         // Request parameters
-                        'memberId'       : $('#memberId').val(),
-                        'firstname'     : $('#firstname').val(),
-                        'lastname'   : $('#lastname').val(),
-                        'memberDetail'   : $('#memberDetail').val(),
+                        'memberId'          : $('#memberId').val(),
+                        'firstname'         : $('#firstname').val(),
+                        'lastname'          : $('#lastname').val(),
+                        'memberDetail'      : $('#memberDetail').val(),
                     };
 
                     // process the form
@@ -371,7 +371,7 @@
                         type        : 'POST',
                         data        : createMember, // our data object
                         dataType    : 'json', // what type of data do we expect back from the server
-                        contentType: "application/x-www-form-urlencoded"
+                        contentType : "application/x-www-form-urlencoded"
                     })
                     // using the done promise callback
                     .done(function(data) {
@@ -380,7 +380,7 @@
                         alert("Done");
                         location.reload();
                     })
-                     // here we will handle errors and validation messages
+                    // here we will handle errors and validation messages
                     .fail(function(data) {
                         console.log(data); 
                         alert("Error");
