@@ -219,7 +219,7 @@
                 <div class="col-md-6 flex-center">
                     <div class="card">
                         <img src="img/logo.png" width="150px" height="150px" style="margin-top: 5%">
-                        <form id="group" method="POST" action="http://localhost:8080/api/controllers/groups" style="width: 360px">
+                        <form id="group" method="POST" style="width: 360px">
                             <div  style="margin-top: 10px;">
                                 <label for="groupId" style="margin-right: 10px;">Insert Your groupId</label>
                                 <input type="text" class="form-control" id="groupId" name="groupId">
@@ -243,19 +243,51 @@
         <!-- ajax create group -->
         <script type='text/javascript'>
             /* attach a submit handler to the form */
-            $("#group").submit(function(event) {
+            // $("#group").submit(function(event) {
 
-              event.preventDefault();
+            //   event.preventDefault();
 
-              var $form = $( this ),
-                  url = $form.attr( 'action' );
+            //   var $form = $( this ),
+            //       url = $form.attr( 'action' );
 
-              var posting = $.post( url, { groupId: $('#groupId').val(), groupName: $('#groupName').val(), groupDetail: $('#groupDetail').val() } );
+            //   var posting = $.post( url, { groupId: $('#groupId').val(), groupName: $('#groupName').val(), groupDetail: $('#groupDetail').val() } );
 
-              posting.done(function( data ) {
-                var log = console.log(data);
-                alert('success');
-              });
+            //   posting.done(function( data ) {
+            //     var log = console.log(data);
+            //     alert('success');
+            //   });
+            // });
+            $('#group').submit(function(event) {
+                var g = {
+                    // Request parameters
+                    'groupId'       : $('#groupId').val(),
+                    'groupName'     : $('#groupName').val(),
+                    'groupDetail'   : $('#groupDetail').val(),
+                };
+
+                // process the form
+                $.ajax({
+                    url         : 'http://localhost:8080/api/controllers/groups',
+                    type        : 'POST',
+                    data        : g, // our data object
+                    dataType    : 'json', // what type of data do we expect back from the server
+                    contentType: "application/x-www-form-urlencoded"
+                })
+                // using the done promise callback
+                .done(function(data) {
+                    // log data to the console so we can see
+                    console.log(data); 
+                    alert("Done");
+                    location.reload();
+                })
+                 // here we will handle errors and validation messages
+                .fail(function(data) {
+                    console.log(data); 
+                    alert("Error");
+                    location.reload();
+                })
+                // stop the form from submitting the normal way and refreshing the page
+                event.preventDefault();
             });
         </script>
         </div>
@@ -279,7 +311,7 @@
                 <div class="col-md-6 flex-center">
                     <div class="card">
                         <img src="img/logo.png" width="150px" height="150px" style="margin-top: 5%">
-                        <form id="member" method="POST" action="http://localhost:8080/api/controllers/groups/:group_id/members" style="width: 360px">
+                        <form id="member" method="POST" style="width: 360px">
                             <div  style="margin-top: 10px;">
                                 <label for="memberId" style="margin-right: 10px;">Insert Your memberId</label>
                                 <input type="text" class="form-control" id="memberId" name="memberId">
@@ -307,19 +339,55 @@
             <!-- ajax create member in group -->
             <script type='text/javascript'>
                 /* attach a submit handler to the form */
-                $("#member").submit(function(event) {
+                // $("#member").submit(function(event) {
 
-                  event.preventDefault();
+                //   event.preventDefault();
 
-                  var $form = $( this ),
-                      url = $form.attr( 'action' );
+                //   var $form = $( this ),
+                //       url = $form.attr( 'action' );
 
-                  var posting = $.post( url, { memberId: $('#memberId').val(), firstname: $('#firstname').val(), lastname: $('#lastname').val(), memberDetail: $('#memberDetail').val() } );
+                //   var fname = $('#firstname').val();
+                //   var lname = $('#lastname').val()
+                //   var memId = fname.concat(lname);
+                //   var posting = $.post( url, { memberId: memId, firstname: fname, lastname: lname, memberDetail: $('#memberDetail').val() } );
 
-                  posting.done(function( data ) {
-                    var log = console.log(data);
-                    alert('success');
-                  });
+                //   posting.done(function( data ) {
+                //     var log = console.log(data);
+                //     alert('success');
+                //   });
+                // });
+                $('#member').submit(function(event) {
+                    var createMember = {
+                        // Request parameters
+                        'memberId'       : $('#memberId').val(),
+                        'firstname'     : $('#firstname').val(),
+                        'lastname'   : $('#lastname').val(),
+                        'memberDetail'   : $('#memberDetail').val(),
+                    };
+
+                    // process the form
+                    $.ajax({
+                        url         : 'http://localhost:8080/api/controllers/groups/:group_id/members',
+                        type        : 'POST',
+                        data        : createMember, // our data object
+                        dataType    : 'json', // what type of data do we expect back from the server
+                        contentType: "application/x-www-form-urlencoded"
+                    })
+                    // using the done promise callback
+                    .done(function(data) {
+                        // log data to the console so we can see
+                        console.log(data); 
+                        alert("Done");
+                        location.reload();
+                    })
+                     // here we will handle errors and validation messages
+                    .fail(function(data) {
+                        console.log(data); 
+                        alert("Error");
+                        location.reload();
+                    })
+                    // stop the form from submitting the normal way and refreshing the page
+                    event.preventDefault();
                 });
             </script>
         </div>
