@@ -8,7 +8,7 @@
 		list($type, $data) = explode(';', $data);
 		list(, $data)      = explode(',', $data);
 		$data = base64_decode($data);
-		$filename = $Fname."_".$Lname.".jpg";
+		$filename = $Fname.$Lname.".jpg";
 		file_put_contents("img/meerkat/".$filename, $data);
 		$filepath = "img/meerkat/".$filename;
 		$sql = "INSERT INTO meerkat (img_name, img_path, Fname, Lname) VALUES ('$filename','$filepath','$Fname','$Lname')";

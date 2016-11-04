@@ -51,9 +51,6 @@
             <li>
                 <a href="#createMember" onclick=$("#menu-close").click();>Create Member</a>
             </li>
-            <li>
-                <a href="#contact" onclick=$("#menu-close").click();>Contact</a>
-            </li>
         </ul>
     </nav>
 
@@ -119,8 +116,8 @@
                                 </div>
                                 <div id="post_take_buttons" style="display:none">
                                     <!-- These buttons are shown after a snapshot is taken -->
-                                    <input class="btn btn-warning" type=button value="Take Another" onClick="cancel_preview()">
                                     <input class="btn btn-success" type=button value="Confirm" onClick="save_photo()" style="font-weight:bold;">
+                                    <input class="btn btn-warning" type=button value="Take Another" onClick="cancel_preview()">
                                 </div>
                             </form>
                         </div>
@@ -129,14 +126,18 @@
                             <!-- Captured image will appear here... -->
                         </div>
 
-                        <div  style="margin-top: 10px;">
+                        <div class="textRomove" style="margin-top: 10px;">
                             <label for="Fname" style="margin-right: 10px;">Insert Your firstname</label>
                             <input type="text" class="form-control" id="Fname" name="Fname">
                         </div>
-                        <div  style="margin-top: 10px;">
+                        <div class="textRomove" style="margin-top: 10px;">
                             <label for="Lname" style="margin-right: 10px;">Insert Your Lastname</label>
                             <input type="text" class="form-control" id="Lname" name="Lname">
                         </div>
+                        <div  style="margin-top: 10px;">
+                            <input id="sendFL" class="btn btn-success" type=button value="Confirm" style="font-weight:bold;">
+                        </div>
+
                     </div>
                 </div>
                 
@@ -185,16 +186,89 @@
                 }
             </script>
 
+
+            <!-- Script to send api and manage webpage -->
             <script type="text/javascript">
+                var memberId;
                 $(function(){
+                    
+                    $('#my_camera,#pre_take_buttons').hide()
+
                     $('body').on('click', '.upload', function(){
                         f = document.getElementById('Fname').value
                         l = document.getElementById('Lname').value
                         $.post('upload.php', {image: data,Fname: f,Lname: l }, function(res){
                             console.log(res);
+                            var pathFile = {
+                                // Request parameters
+                                'path'          : 'img/meerkat/'+memberId+'.jpg',
+                            };
+                            // process the form
+                            $.ajax({
+                                url         : 'http://localhost:8080/api/models/groups/DemoDDay/members/'+memberId+'/personImages',
+                                type        : 'POST',
+                                data        : pathFile, // our data object
+                                dataType    : 'json', // what type of data do we expect back from the server
+                                contentType : "application/x-www-form-urlencoded"
+                            })
+                            // using the done promise callback
+                            .done(function(data) {
+                                // log d'ata to the console so we can see
+                                console.log(data); 
+                                alert("Done");
+                                location.reload();
+                            })
+                            // here we will handle errors and validation messages
+                            .fail(function(data) {
+                                console.log(data); 
+                                alert("Error");
+                                // location.reload();
+                            })
+
+
+
                             window.location = "index.html";
                         });
                     });
+                });
+
+                $('#sendFL').click(function(event) {
+                    var createMember = {
+                        // Request parameters
+                        'memberId'          : $('#Fname').val()+$('#Lname').val(),
+                        'firstname'         : $('#Fname').val(),
+                        'lastname'          : $('#Lname').val(),
+                    };
+
+                    // process the form
+                    $.ajax({
+                        url         : 'http://localhost:8080/api/models/groups/DemoDDay/members',
+                        type        : 'POST',
+                        data        : createMember, // our data object
+                        dataType    : 'json', // what type of data do we expect back from the server
+                        contentType : "application/x-www-form-urlencoded"
+                    })
+                    // using the done promise callback
+                    .done(function(data) {
+                        // log d'ata to the console so we can see
+                        console.log(data); 
+                        memberId = $('#Fname').val()+$('#Lname').val();
+                        $('#my_camera,#pre_take_buttons').fadeIn(1000)
+                        $('#sendFL,#Fname,#Lname,.textRomove').hide()
+                        alert("Done");
+                        $.post('http://localhost:8080/api/models/train/DemoDDay',{},function(res){
+                            console.log(res);
+                        })
+                        // location.reload();
+                    })
+                    // here we will handle errors and validation messages
+                    .fail(function(data) {
+                        console.log(data); 
+                        alert("Error");
+                        // location.reload();
+                    })
+                    // stop the form from submitting the normal way and refreshing the page
+                    event.preventDefault();
                 });
             </script>
 
@@ -267,7 +341,7 @@
 
                 // process the form
                 $.ajax({
-                    url         : 'http://localhost:8080/api/controllers/groups',
+                    url         : 'http://localhost:8080/api/models/groups',
                     type        : 'POST',
                     data        : g, // our data object
                     dataType    : 'json', // what type of data do we expect back from the server
@@ -284,7 +358,7 @@
                 .fail(function(data) {
                     console.log(data); 
                     alert("Error");
-                    location.reload();
+                    // location.reload();
                 })
                 // stop the form from submitting the normal way and refreshing the page
                 event.preventDefault();
@@ -367,7 +441,7 @@
 
                     // process the form
                     $.ajax({
-                        url         : 'http://localhost:8080/api/controllers/groups/:group_id/members',
+                        url         : 'http://localhost:8080/api/models/groups/:group_id/members',
                         type        : 'POST',
                         data        : createMember, // our data object
                         dataType    : 'json', // what type of data do we expect back from the server
@@ -390,19 +464,6 @@
                     event.preventDefault();
                 });
             </script>
-        </div>
-    </section>
-
-    <!-- Map -->
-    <section id="contact" class="bg">
-        <div id='stars'></div>
-        <div id='stars2'></div>
-        <div id='stars3'></div>
-         <div class="text-vertical-center">
-            <h1>Start Bootstrap</h1>
-            <h3>Free Bootstrap Themes &amp; Templates</h3>
-            <br>
-            <a class="btn btn-dark btn-lg">Find Out More</a>
         </div>
     </section>
 
