@@ -316,21 +316,6 @@
 
         <!-- ajax create group -->
         <script type='text/javascript'>
-            /* attach a submit handler to the form */
-            // $("#group").submit(function(event) {
-
-            //   event.preventDefault();
-
-            //   var $form = $( this ),
-            //       url = $form.attr( 'action' );
-
-            //   var posting = $.post( url, { groupId: $('#groupId').val(), groupName: $('#groupName').val(), groupDetail: $('#groupDetail').val() } );
-
-            //   posting.done(function( data ) {
-            //     var log = console.log(data);
-            //     alert('success');
-            //   });
-            // });
             $('#group').submit(function(event) {
                 var g = {
                     // Request parameters
@@ -412,24 +397,6 @@
 
             <!-- ajax create member in group -->
             <script type='text/javascript'>
-                /* attach a submit handler to the form */
-                // $("#member").submit(function(event) {
-
-                //   event.preventDefault();
-
-                //   var $form = $( this ),
-                //       url = $form.attr( 'action' );
-
-                //   var fname = $('#firstname').val();
-                //   var lname = $('#lastname').val()
-                //   var memId = fname.concat(lname);
-                //   var posting = $.post( url, { memberId: memId, firstname: fname, lastname: lname, memberDetail: $('#memberDetail').val() } );
-
-                //   posting.done(function( data ) {
-                //     var log = console.log(data);
-                //     alert('success');
-                //   });
-                // });
                 $('#member').submit(function(event) {
                     var createMember = {
                         // Request parameters
