@@ -201,7 +201,7 @@
                                 // localhost
                                 'path'          : '/Applications/MAMP/htdocs/Meerkat/img/meerkat/'+memberId+'.jpg',
                                 // Server
-                                //'path'          : '/var/www/http/Meerkat/img/meerkat/'+memberId+'.jpg',
+                                //'path'          : '/var/www/html/Meerkat/img/meerkat/'+memberId+'.jpg',
                             };
                             // process the form
                             $.ajax({
@@ -219,10 +219,17 @@
                                 // log d'ata to the console so we can see
                                 console.log(data); 
                                 alert("Done Add Img");
+                                //Local
                                 $.post('http://localhost:8080/api/models/train/dday',{},function(res){
                                     console.log(res);
                                     alert("Done Train");
+                                    location.reload();
                                 })
+                                //Server
+                                // $.post('http://10.4.37.34:8080/api/models/train/dday',{},function(res){
+                                //     console.log(res);
+                                //     alert("Done Train");
+                                // })
                                 // location.reload();
                             })
                             // here we will handle errors and validation messages
