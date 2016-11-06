@@ -153,10 +153,12 @@
                         $.post('uploadAnalyze.php', {image: datauri,timeimg: n }, function(res){
                             console.log(res);
                             // alert("Done Upload");
-                            var ppath = '/Applications/MAMP/htdocs/Meerkat/img/analyze/'+n+'.jpg'
                             var detectBody = {
                                 // Request parameters
+                                //Local
                                 'path'                  : '/Applications/MAMP/htdocs/Meerkat/img/analyze/'+n+'.jpg',
+                                //Server
+                                // 'path'                  : '/var/www/http/Meerkat/img/analyze/'+n+'.jpg',
                                 'returnFaceId'          : true,
                                 'analyzesFaceLandmarks' : true,
                                 'analyzesAge'           : true,
@@ -166,7 +168,10 @@
                                 'analyzesFacialHair'    : true,
                             };
                             $.ajax({
+                                //Local
                                 url         : 'http://localhost:8080/api/models/analyze/dday',
+                                //Server
+                                // url         : 'http://10.4.37.34:8080/api/models/analyze/dday',
                                 type        : 'POST',
                                 data        : detectBody, // our data object
                                 dataType    : 'json', // what type of data do we expect back from the server
