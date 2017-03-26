@@ -185,13 +185,13 @@
                                 var strdata = JSON.stringify(data, null, 2);
                                 // alert(strdata);
                                
-                                var ffname,llname,height,left,top,width;
-                                ffname  =   data.data[0].firstname;
-                                llname  =   data.data[0].lastname;
-                                height  =   data.data[0].faceRectangle.height;
-                                left    =   data.data[0].faceRectangle.left;
-                                top     =   data.data[0].faceRectangle.top;
-                                width   =   data.data[0].faceRectangle.width;
+                                // var ffname,llname,height,left,top,width;
+                                // ffname  =   data.data[0].firstname;
+                                // llname  =   data.data[0].lastname;
+                                // height  =   data.data[0].faceRectangle.height;
+                                // left    =   data.data[0].faceRectangle.left;
+                                // top     =   data.data[0].faceRectangle.top;
+                                // width   =   data.data[0].faceRectangle.width;
                                 function loadImages(sources, callback) {
                                     var images = {};
                                     var loadedImages = 0;
@@ -221,7 +221,7 @@
                                     context.beginPath();
                                     context.lineWidth="6";
                                     context.strokeStyle="red";
-                                    context.rect(left,top,width,height); 
+                                    // context.rect(left,top,width,height); 
                                     context.stroke();
                                 });
                                 // location.reload();

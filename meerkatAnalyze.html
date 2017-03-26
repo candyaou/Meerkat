@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>MEERKAT</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/stylish-portfolio.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/creative.css" type="text/css">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script> 
+    <style type="text/css">
+        body { font-family: Helvetica, sans-serif; }
+        h2, h3 { margin-top:0; }
+        form { margin-top: 15px; }
+        form > input { margin-right: 15px; }
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
+
+</head>
+<body>
+    <section class="container bg">
+        <div id='stars'></div>
+        <div id='stars2'></div>
+        <div id='stars3'></div>
+         <!-- <div class="text-vertical-center"> -->
+            <div class="row">
+                <div class="col-md-1 flex-center"></div>
+                <div class="col-md-5 flex-center" style="z-index: 1;">
+                    <div class="card" style="width: 520px; height: 575px">
+                        <canvas id="myCanvas" width="480" height="400" style="margin-top:15%;">
+                            
+                        </canvas>
+                        <div  style="margin-top: 10px;">
+                            <input id="sendFL" class="btn btn-success" type=button value="Confirm" style="font-weight:bold;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 flex-center">
+                    <div class="card" style="width: 520px; height: 575px">
+                        <div id="analyzeResult" style="margin-top: 30%;">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1 flex-center"></div>
+            </div>
+
+
+            <!-- Script to send api and manage webpage -->
+            <script type="text/javascript">
+                $('#sendFL').click(function(event) {
+                    imgSource = 'https://scontent.fbkk5-7.fna.fbcdn.net/v/t31.0-8/15732361_1317073871677773_3637179327259141945_o.jpg?oh=fb91cdffeca1a363f30d8b8c7b1c43f3&oe=5954F74A';
+                    var detectBody = {
+                        // Request parameters
+                        //Local
+                        'sessionId'             : 'csc373-meerkat',
+                        'url'                   : imgSource,
+                        'returnFaceId'          : true,
+                        'analyzesFaceLandmarks' : true,
+                        'analyzesAge'           : true,
+                        'analyzesGender'        : true,
+                        'analyzesHeadPose'      : true,
+                        'analyzesSmile'         : true,
+                        'analyzesFacialHair'    : true,
+                    };
+                    $.ajax({
+                        //Local
+                        url         : 'http://localhost:8080/api/analyze/csc373',
+                        //Server
+                        // url         : 'http://10.4.37.34:8080/api/models/analyze/dday',
+                        type        : 'POST',
+                        data        : detectBody, // our data object
+                        dataType    : 'json', // what type of data do we expect back from the server
+                        contentType : "application/x-www-form-urlencoded"
+                    })
+                    // using the done promise callback
+                    .done(function(data) {
+                        // log d'ata to the console so we can see
+                        console.log(data); 
+                        // alert("Done Send API to detect");
+                        var strdata = JSON.stringify(data, null, 2);
+                        // alert(strdata);
+                        function loadImages(sources, callback) {
+                            var images = {};
+                            var loadedImages = 0;
+                            var numImages = 0;
+                            // get num of sources
+                            for(var src in sources) {
+                              numImages++;
+                            }
+                            for(var src in sources) {
+                              images[src] = new Image();
+                              images[src].onload = function() {
+                                if(++loadedImages >= numImages) {
+                                  callback(images);
+                                }
+                              };
+                              images[src].src = sources[src];
+                            }
+                        }
+                        var canvas = document.getElementById('myCanvas');
+                        var context = canvas.getContext('2d');
+
+                        var sources = {
+                         anaImg: imgSource,
+                        };
+                        loadImages(sources, function(images) {
+                            context.drawImage(images.anaImg, 0, 0, 480, 360);
+                            context.beginPath();
+                            context.lineWidth="6";
+                            context.strokeStyle="red";
+                            // context.rect(left,top,width,height); 
+                            context.stroke();
+                        });
+                        // location.reload();
+                        // document.getElementById('analyzeResult').innerHTML = strdata
+                        $.ajax({
+                            url         : 'http://localhost:8080/api/summarize/csc373/session/csc373-meerkat',
+                            type        : 'GET',
+                            dataType    : 'json', // what type of data do we expect back from the server
+                            contentType : "application/x-www-form-urlencoded"
+                        })
+                        .done(function(data) {
+                            // alert("Done Get summarize");
+                            // str = JSON.stringify(data, null, 4);
+                            // document.getElementById('analyzeResult').innerHTML = str;
+                            console.log(data.timestamp.length);
+                            console.log(data.members.length);
+                            var table = document.createElement('table'), th, tr, td, row, cell;
+
+                            tr = document.createElement('tr');
+                                for (cell = 0; cell <= data.timestamp.length; cell++) {
+                                    th = document.createElement('th');
+                                    tr.appendChild(th);
+                                    if(cell == 0){
+                                        th.innerHTML = '';
+                                    }else{
+                                        th.innerHTML = data.timestamp[cell-1].slice(11);
+                                    }
+                                }
+                            table.appendChild(tr);
+
+                            for (row = 0; row < data.members.length; row++) {
+                                tr = document.createElement('tr');
+                                for (cell = 0; cell <= data.timestamp.length; cell++) {
+                                    td = document.createElement('td');
+                                    tr.appendChild(td);
+                                    if(cell == 0){
+                                        td.innerHTML = data.members[row].firstname;
+                                    }else{
+                                        td.innerHTML = data.members[row].result[cell-1];
+                                    }
+                                    
+                                }
+                                table.appendChild(tr);
+                            }
+                            document.getElementById('analyzeResult').appendChild(table);
+
+
+
+
+                            console.log(data);
+                            // console.log(data.members);
+                        })
+                        .fail(function(data) {
+                            console.log(data); 
+                            alert("Error");
+                            // location.reload();
+                        })
+                    })
+                    // here we will handle errors and validation messages
+                    .fail(function(data) {
+                        console.log(data); 
+                        alert("Error");
+                        // location.reload();
+                    })
+                    event.preventDefault();
+                });
+
+    </script>
+    </section>
+
+</body>
+
+</html>
