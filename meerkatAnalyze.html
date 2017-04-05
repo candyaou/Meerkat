@@ -46,13 +46,13 @@
                             
                         </canvas>
                         <div  style="margin-top: 10px;">
-                            <input id="sendFL" class="btn btn-success" type=button value="Confirm" style="font-weight:bold;">
+                            <input id="sendFL" class="btn btn-success" type=button value="Start" style="font-weight:bold;">
                         </div>
                     </div>
                 </div>
                 <div class="col-md-5 flex-center">
                     <div class="card" style="width: 520px; height: 575px">
-                        <div id="analyzeResult" style="margin-top: 30%;">
+                        <div id="analyzeResult" style="margin-top: 30%; overflow: auto;">
                             
                         </div>
                     </div>
@@ -63,13 +63,16 @@
 
             <!-- Script to send api and manage webpage -->
             <script type="text/javascript">
-                $('#sendFL').click(function(event) {
-                    imgSource = 'https://scontent.fbkk5-7.fna.fbcdn.net/v/t31.0-8/15732361_1317073871677773_3637179327259141945_o.jpg?oh=fb91cdffeca1a363f30d8b8c7b1c43f3&oe=5954F74A';
+                var imageNumber = 788;
+                function analyze(){
+                    imgSource = 'img/analyze/Y0120'+imageNumber+'.jpg';
+
+
                     var detectBody = {
                         // Request parameters
                         //Local
-                        'sessionId'             : 'csc373-meerkat',
-                        'url'                   : imgSource,
+                        'sessionId'             : 'mrt101-meerkat',
+                        'path'                   : '/Applications/MAMP/htdocs/Meerkat/'+imgSource,
                         'returnFaceId'          : true,
                         'analyzesFaceLandmarks' : true,
                         'analyzesAge'           : true,
@@ -80,9 +83,7 @@
                     };
                     $.ajax({
                         //Local
-                        url         : 'http://localhost:8080/api/analyze/csc373',
-                        //Server
-                        // url         : 'http://10.4.37.34:8080/api/models/analyze/dday',
+                        url         : 'http://localhost:8080/api/analyze/mrt101',
                         type        : 'POST',
                         data        : detectBody, // our data object
                         dataType    : 'json', // what type of data do we expect back from the server
@@ -93,7 +94,7 @@
                         // log d'ata to the console so we can see
                         console.log(data); 
                         // alert("Done Send API to detect");
-                        var strdata = JSON.stringify(data, null, 2);
+                        // var strdata = JSON.stringify(data, null, 2);
                         // alert(strdata);
                         function loadImages(sources, callback) {
                             var images = {};
@@ -120,17 +121,24 @@
                          anaImg: imgSource,
                         };
                         loadImages(sources, function(images) {
+                            var height,left,top,width;
                             context.drawImage(images.anaImg, 0, 0, 480, 360);
-                            context.beginPath();
-                            context.lineWidth="6";
-                            context.strokeStyle="red";
-                            // context.rect(left,top,width,height); 
-                            context.stroke();
+                            // for(i = 0; i < data.faceRectangle.length; i++){
+                            // context.beginPath();
+                            // context.lineWidth="6";
+                            // context.strokeStyle="red";
+                            // height  =   data.faceRectangle[i].height;
+                            // left    =   data.faceRectangle[i].left;
+                            // top     =   data.faceRectangle[i].top;
+                            // width   =   data.faceRectangle[i].width;
+                            // context.rect(left,top,width,height);
+                            // context.stroke();
+                            // }
                         });
-                        // location.reload();
-                        // document.getElementById('analyzeResult').innerHTML = strdata
+                    //     // location.reload();
+                    //     // document.getElementById('analyzeResult').innerHTML = strdata
                         $.ajax({
-                            url         : 'http://localhost:8080/api/summarize/csc373/session/csc373-meerkat',
+                            url         : 'http://localhost:8080/api/summarize/mrt101/session/mrt101-meerkat',
                             type        : 'GET',
                             dataType    : 'json', // what type of data do we expect back from the server
                             contentType : "application/x-www-form-urlencoded"
@@ -139,8 +147,10 @@
                             // alert("Done Get summarize");
                             // str = JSON.stringify(data, null, 4);
                             // document.getElementById('analyzeResult').innerHTML = str;
-                            console.log(data.timestamp.length);
-                            console.log(data.members.length);
+                            // console.log(data.timestamp.length);
+                            // console.log(data.members.length);
+                            $('#myCanvas').empty();
+                            $('#analyzeResult').empty();
                             var table = document.createElement('table'), th, tr, td, row, cell;
 
                             tr = document.createElement('tr');
@@ -153,9 +163,14 @@
                                         th.innerHTML = data.timestamp[cell-1].slice(11);
                                     }
                                 }
+                                th = document.createElement('th');
+                                tr.appendChild(th);
+                                th.innerHTML = 'Result';
                             table.appendChild(tr);
-
+                            
                             for (row = 0; row < data.members.length; row++) {
+                                resultTrue = 0;
+                                resultFalse = 0;
                                 tr = document.createElement('tr');
                                 for (cell = 0; cell <= data.timestamp.length; cell++) {
                                     td = document.createElement('td');
@@ -165,8 +180,25 @@
                                     }else{
                                         td.innerHTML = data.members[row].result[cell-1];
                                     }
+
+                                    result = data.members[row].result[cell-1];
+                                    if(result == true){
+                                        resultTrue += 1;
+                                    }
+                                    if(result == false){
+                                        resultFalse += 1;
+                                    }
                                     
+
                                 }
+                                console.log('true from'+data.members[row].firstname+' : '+resultTrue);
+                                console.log('false from'+data.members[row].firstname+' : '+resultFalse);
+                                    
+                                td = document.createElement('td');
+                                tr.appendChild(td);
+                                percentage = resultTrue/(resultTrue+resultFalse);
+                                td.innerHTML = (percentage * 100) + ' %';
+
                                 table.appendChild(tr);
                             }
                             document.getElementById('analyzeResult').appendChild(table);
@@ -175,6 +207,9 @@
 
 
                             console.log(data);
+                            imageNumber = imageNumber + 1;
+
+                            setTimeout(analyze,5000);
                             // console.log(data.members);
                         })
                         .fail(function(data) {
@@ -189,6 +224,9 @@
                         alert("Error");
                         // location.reload();
                     })
+                }
+                $('#sendFL').click(function(event) {
+                    analyze();
                     event.preventDefault();
                 });
 

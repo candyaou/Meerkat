@@ -38,7 +38,7 @@
             <div class="row">
                 <div class="col-md-1 flex-center"></div>
                 <div class="col-md-5 flex-center" style="z-index: 1;">
-                    <div class="card">
+                    <div class="card" style="width: 675px; height: 575px">
                         <div id="my_photo_booth">
                             <div id="my_camera" style="margin-top:5%;"></div>
                             
@@ -56,7 +56,7 @@
                                         dest_height: 480,
                                         
                                         // final cropped size
-                                        crop_width: 480,
+                                        crop_width: 640,
                                         crop_height: 480,
                                         
                                         // format and quality
@@ -70,95 +70,88 @@
                             <!-- A button for taking snaps -->
                             <form>
                                 <div id="pre_take_buttons">
-                                    <!-- This button is shown before the user takes a snapshot -->
-                                    <input class="btn btn-danger" type=button value="Take Snapshot" onClick="preview_snapshot()">
+                                     <!-- <div class="textRomove" style="margin-top: 10px;">
+                                        <label for="Fname" style="margin-right: 10px;">Insert Your firstname</label>
+                                        <input type="text" class="form-control" id="Fname" name="Fname">
+                                    </div>
+                                    <div class="textRomove" style="margin-top: 10px;">
+                                        <label for="ClassName" style="margin-right: 10px;">Insert Your ClassName</label>
+                                        <input type="text" class="form-control" id="ClassName" name="ClassName">
+                                    </div> -->
+                                    <input class="btn start btn-danger" type=button value="Start Meerkat System" style="margin-top: 10px;">
                                 </div>
+
                                 <div id="post_take_buttons" style="display:none">
-                                    <!-- These buttons are shown after a snapshot is taken -->
+                                    <input class="btn stop btn-success" type=button value="Stop Meerkat System" style="font-weight:bold;">
+                                </div>
+
+                                <!-- <div id="post_take_buttons" style="display:none">
                                     <input class="btn btn-success" type=button value="Confirm" onClick="save_photo()" style="font-weight:bold;">
                                     <input class="btn btn-warning" type=button value="Take Another" onClick="cancel_preview()">
-                                </div>
+                                </div> -->
                             </form>
                         </div>
 
-                        <div id="results" style="display:none; margin-top:5%;">
+                        <div id="results" style="display:none; margin-top:50%;">
                             <!-- Captured image will appear here... -->
                         </div>
                     </div>
                 </div>
                 <div class="col-md-5 flex-center">
-                    <div class="card" style="width: 520px; height: 575px">
+                    <!-- <div class="card" style="width: 520px; height: 575px">
                         <canvas id="myCanvas" width="480" height="480" style="margin-top:5%;">
                             
                         </canvas>
-                        <div id="analyzeResult">
-                            Result of Analyze will appear here...
+                        <div id="summarizeResult">
+                            Result of Summarize will appear here...
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="col-md-1 flex-center"></div>
             </div>
 
-            <!-- Code to handle taking the snapshot and displaying it locally -->
-            <script language="JavaScript">
-
-                var datauri;
-                function preview_snapshot() {
-                    
-                    // freeze camera so user can preview current frame
-                    Webcam.freeze();
-                    
-                    // swap button sets
-                    document.getElementById('pre_take_buttons').style.display = 'none';
-                    document.getElementById('post_take_buttons').style.display = '';
-                }
-                
-                function cancel_preview() {
-                    // cancel preview freeze and return to live camera view
-                    Webcam.unfreeze();
-                    
-                    // swap buttons back to first set
-                    document.getElementById('pre_take_buttons').style.display = '';
-                    document.getElementById('post_take_buttons').style.display = 'none';
-                }
-                
-                function save_photo() {
-                    // actually snap photo (from preview freeze) and display it
-                    
-                    Webcam.snap( function(data_uri) {
-                        // display results in page
-                        datauri = data_uri;
-                        document.getElementById('results').innerHTML = 
-                            '<img src="'+datauri+'"/><br/>' + 
-                            '<button id="btnul" type="button" class="upload btn btn-success" style="margin-top:4%;">Upload</button>';
-                        
-                        // shut down camera, stop capturing
-                        Webcam.reset();
-                        
-                        // show results, hide photo booth
-                        document.getElementById('results').style.display = '';
-                        document.getElementById('my_photo_booth').style.display = 'none';
-                    } );
-                }
-            </script>
-
-
-            <!-- Script to send api and manage webpage -->
             <script type="text/javascript">
-                var d = new Date();
-                var n = d.getTime();
-                console.log(n);
+                var datauri;
+                var meerkat = true;
+                var imageName = 777;
+
                 $(function(){
-                    $('body').on('click', '.upload', function(){
-                        $.post('uploadAnalyze.php', {image: datauri,timeimg: n }, function(res){
+                    $('body').on('click', '.start', function(){
+                        document.getElementById('pre_take_buttons').style.display = 'none';
+                        document.getElementById('post_take_buttons').style.display = '';
+                        save_upload();
+                    });
+                });
+
+                $(function(){
+                    $('body').on('click', '.stop', function(){
+                        document.getElementById('pre_take_buttons').style.display = '';
+                        document.getElementById('post_take_buttons').style.display = 'none';
+                        meerkat = false;
+                    });
+                });
+
+                function save_upload(){
+                    Webcam.snap(function(data_uri){
+                        
+                        datauri = data_uri;
+                        Webcam.freeze();
+                        // Webcam.reset();
+                        upload_analyze();
+                    })
+                    
+                }
+                function upload_analyze(){
+                    var d = new Date();
+                    var n = d.getTime();
+                    console.log(n);
+                    $.post('uploadAnalyze.php', {image: datauri,timeimg: n }, function(res){
                             console.log(res);
-                            // alert("Done Upload");
+                            // var ClassName = $('#ClassName').val();
                             var detectBody = {
                                 // Request parameters
-                                //Local
-                                'path'                  : '/Applications/MAMP/htdocs/Meerkat/img/analyze/'+n+'.jpg',
-                                //Server
-                                // 'path'                  : '/var/www/html/Meerkat/img/analyze/'+n+'.jpg',
+                                'sessionId'             : 'csc373-meerkat',
+                                'path'                  : '/Applications/MAMP/htdocs/Meerkat/img/analyze/Y0120'+n+'.jpg',
                                 'returnFaceId'          : true,
                                 'analyzesFaceLandmarks' : true,
                                 'analyzesAge'           : true,
@@ -169,9 +162,7 @@
                             };
                             $.ajax({
                                 //Local
-                                url         : 'http://localhost:8080/api/models/analyze/dday',
-                                //Server
-                                // url         : 'http://10.4.37.34:8080/api/models/analyze/dday',
+                                url         : 'http://localhost:8080/api/analyze/csc373',
                                 type        : 'POST',
                                 data        : detectBody, // our data object
                                 dataType    : 'json', // what type of data do we expect back from the server
@@ -181,56 +172,21 @@
                             .done(function(data) {
                                 // log d'ata to the console so we can see
                                 console.log(data); 
-                                alert("Done Send API to detect");
+                                console.log("Done Send API to detect");
+                                Webcam.unfreeze();
                                 var strdata = JSON.stringify(data, null, 2);
-                                // alert(strdata);
-                               
-                                // var ffname,llname,height,left,top,width;
-                                // ffname  =   data.data[0].firstname;
-                                // llname  =   data.data[0].lastname;
-                                // height  =   data.data[0].faceRectangle.height;
-                                // left    =   data.data[0].faceRectangle.left;
-                                // top     =   data.data[0].faceRectangle.top;
-                                // width   =   data.data[0].faceRectangle.width;
-                                function loadImages(sources, callback) {
-                                    var images = {};
-                                    var loadedImages = 0;
-                                    var numImages = 0;
-                                    // get num of sources
-                                    for(var src in sources) {
-                                      numImages++;
-                                    }
-                                    for(var src in sources) {
-                                      images[src] = new Image();
-                                      images[src].onload = function() {
-                                        if(++loadedImages >= numImages) {
-                                          callback(images);
-                                        }
-                                      };
-                                      images[src].src = sources[src];
-                                    }
+                                console.log(strdata);
+                                if(meerkat == true){
+                                    imageName += 1;
+                                    var m = Math.random() * 20000;
+                                    console.log(m);
+                                    setTimeout(save_upload,m);
                                 }
-                                var canvas = document.getElementById('myCanvas');
-                                var context = canvas.getContext('2d');
-
-                                var sources = {
-                                 anaImg: datauri,
-                                };
-                                loadImages(sources, function(images) {
-                                    context.drawImage(images.anaImg, 0, 0, 480, 480);
-                                    context.beginPath();
-                                    context.lineWidth="6";
-                                    context.strokeStyle="red";
-                                    // context.rect(left,top,width,height); 
-                                    context.stroke();
-                                });
-                                // location.reload();
-                                // document.getElementById('analyzeResult').innerHTML = strdata
-                                document.getElementById('analyzeResult').innerHTML = 'Firstname : '+ffname+
-                                '<br>Lastname : '+llname+
-                                '<br>Position (left , top , width , height) : '+height+' , '+left+' , '+top+' , '+width;
-
-
+                                else{
+                                    alert("Stop Meerkat");
+                                    summarizeMeerkat();
+                                }
+                                
                             })
                             // here we will handle errors and validation messages
                             .fail(function(data) {
@@ -239,8 +195,63 @@
                                 // location.reload();
                             })
                         });
-                    });
-                });
+
+                }
+
+                function summarizeMeerkat(){
+                    // var ClassName = $('#ClassName').val();
+                    $.ajax({
+                            url         : 'http://localhost:8080/api/summarize/csc373/session/csc373-meerkat',
+                            type        : 'GET',
+                            dataType    : 'json', // what type of data do we expect back from the server
+                            contentType : "application/x-www-form-urlencoded"
+                        })
+                        .done(function(data) {
+                            var table = document.createElement('table'), th, tr, td, row, cell;
+                            // var memberName = $('#Fname').val();
+                            tr = document.createElement('tr');
+                                for (cell = 0; cell <= data.timestamp.length; cell++) {
+                                    th = document.createElement('th');
+                                    tr.appendChild(th);
+                                    if(cell == 0){
+                                        th.innerHTML = '';
+                                    }else{
+                                        th.innerHTML = data.timestamp[cell-1].slice(11,16);
+                                    }
+                                }
+                            table.appendChild(tr);
+
+                            for (row = 0; row < data.members.length; row++) {
+                                tr = document.createElement('tr');
+                                for (cell = 0; cell <= data.timestamp.length; cell++) {
+                                    td = document.createElement('td');
+                                    tr.appendChild(td);
+                                    // if(data.members[row].firstname == memberName){
+                                        if(cell == 0){
+                                            td.innerHTML = data.members[row].firstname;
+                                        }else{
+                                            td.innerHTML = data.members[row].result[cell-1];
+                                        }
+                                    // }
+                                    
+                                    
+                                }
+                                table.appendChild(tr);
+                            }
+                            // document.getElementById('summarizeResult').appendChild(table);
+                            document.getElementById('results').appendChild(table);
+                            document.getElementById('results').style.display = '';
+                            document.getElementById('my_photo_booth').style.display = 'none';
+                            console.log(data);
+                            // console.log(data.members);
+                        })
+                        .fail(function(data) {
+                            console.log(data); 
+                            alert("Error");
+                            // location.reload();
+                        })
+                }
+
             </script>
     </section>
 
